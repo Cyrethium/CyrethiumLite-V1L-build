@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE wallpapers SYSTEM "mate-wp-list.dtd">
+<wallpapers>
+  <wallpaper deleted="false">
+    <name>Cyrethium Default</name>
+    <filename>/usr/share/backgrounds/default.png</filename>
+    <options>zoom</options>
+    <pcolor>#2c001e</pcolor>
+    <scolor>#2c001e</scolor>
+    <shade_type>solid</shade_type>
+  </wallpaper>
+
+  <wallpaper deleted="false">
+    <name>Viper</name>
+    <filename>/usr/share/backgrounds/viper.png</filename>
+    <options>zoom</options>
+    <pcolor>#2c001e</pcolor>
+    <scolor>#2c001e</scolor>
+    <shade_type>solid</shade_type>
+  </wallpaper>
+
+  <wallpaper deleted="false">
+    <name>Terminal</name>
+    <filename>/usr/share/backgrounds/terminal.png</filename>
+    <options>zoom</options>
+    <pcolor>#2c001e</pcolor>
+    <scolor>#2c001e</scolor>
+    <shade_type>solid</shade_type>
+  </wallpaper>
+
+  <wallpaper deleted="false">
+    <name>Blue Viper Terminal</name>
+    <filename>/usr/share/backgrounds/blueviper.png</filename>
+    <options>zoom</options>
+    <pcolor>#2c001e</pcolor>
+    <scolor>#2c001e</scolor>
+    <shade_type>solid</shade_type>
+  </wallpaper>
+
+  <wallpaper deleted="false">
+    <name>Mask</name>
+    <filename>/usr/share/backgrounds/mask.png</filename>
+    <options>zoom</options>
+    <pcolor>#2c001e</pcolor>
+    <scolor>#2c001e</scolor>
+    <shade_type>solid</shade_type>
+  </wallpaper>
+
+  <wallpaper deleted="false">
+    <name>Katana</name>
+    <filename>/usr/share/backgrounds/katana.png</filename>
+    <options>zoom</options>
+    <pcolor>#2c001e</pcolor>
+    <scolor>#2c001e</scolor>
+    <shade_type>solid</shade_type>
+  </wallpaper>
+
+  <wallpaper deleted="false">
+    <name>Dangerous</name>
+    <filename>/usr/share/backgrounds/dangerous.png</filename>
+    <options>zoom</options>
+    <pcolor>#2c001e</pcolor>
+    <scolor>#2c001e</scolor>
+    <shade_type>solid</shade_type>
+  </wallpaper>
+
+  <wallpaper deleted="false">
+    <name>Shadow</name>
+    <filename>/usr/share/backgrounds/shadow.png</filename>
+    <options>zoom</options>
+    <pcolor>#2c001e</pcolor>
+    <scolor>#2c001e</scolor>
+    <shade_type>solid</shade_type>
+  </wallpaper>
+
+  <wallpaper deleted="false">
+    <name>True Cyrethium</name>
+    <filename>/usr/share/backgrounds/truecyrethium.png</filename>
+    <options>zoom</options>
+    <pcolor>#2c001e</pcolor>
+    <scolor>#2c001e</scolor>
+    <shade_type>solid</shade_type>
+  </wallpaper>
+
+  <wallpaper deleted="false">
+    <name>Circuits</name>
+    <filename>/usr/share/backgrounds/circuits.png</filename>
+    <options>zoom</options>
+    <pcolor>#2c001e</pcolor>
+    <scolor>#2c001e</scolor>
+    <shade_type>solid</shade_type>
+  </wallpaper>
+
+  <wallpaper deleted="false">
+    <name>Cyrethium</name>
+    <filename>/usr/share/backgrounds/cyrethium.png</filename>
+    <options>zoom</options>
+    <pcolor>#2c001e</pcolor>
+    <scolor>#2c001e</scolor>
+    <shade_type>solid</shade_type>
+  </wallpaper>
+</wallpapers>

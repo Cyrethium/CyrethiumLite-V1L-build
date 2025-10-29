@@ -1,0 +1,78 @@
+#!/bin/bash
+# Fix Network & iptables
+# Developer: root0emir
+
+if [[ $EUID -ne 0 ]]; then
+   echo "This script must be run as root!" 
+   exit 1
+fi
+
+echo "========================================"
+echo "       IPTABLES & NETWORK FIXER         "
+echo "========================================"
+
+# =========================
+# WARNINGS
+# =========================
+echo ""
+echo "WARNING 1: This will RESET ALL iptables rules. If you are routing all traffic through Tor, cleanup may break the connection and your IP could leak!"
+echo "WARNING 2: This will REMOVE all iptables rules, banned IPs will be unblocked."
+echo "WARNING 3: This will RESET ALL firewall settings."
+echo ""
+
+# Tor check
+echo "[*] Checking if traffic is routed through Tor..."
+TOR_CHECK=$(curl -s https://check.torproject.org/ | grep "Congratulations. This browser is configured to use Tor")
+if [[ -n "$TOR_CHECK" ]]; then
+    echo "[!] Tor traffic detected. STOP Tor routing before cleaning to avoid IP leaks!"
+    read -p "Type YES to continue anyway, or anything else to cancel: " tor_confirm
+    if [[ "$tor_confirm" != "YES" ]]; then
+        echo "Operation cancelled."
+        exit 1
+    fi
+else
+    echo "[✓] No Tor routing detected. Safe to continue."
+fi
+
+read -p "Type YES to confirm and continue with cleanup: " confirm
+if [[ "$confirm" != "YES" ]]; then
+    echo "Operation cancelled."
+    exit 1
+fi
+
+echo "[*] Starting full network and iptables cleanup..."
+sleep 1
+
+# 1. Flush all iptables tables
+iptables -F
+iptables -X
+iptables -t nat -F
+iptables -t nat -X
+iptables -t mangle -F
+iptables -t mangle -X
+iptables -t raw -F
+iptables -t raw -X
+echo "[✓] All iptables rules flushed."
+
+# 2. Set default policies to ACCEPT
+iptables -P INPUT ACCEPT
+iptables -P FORWARD ACCEPT
+iptables -P OUTPUT ACCEPT
+echo "[✓] Default policies set to ACCEPT (INPUT=ACCEPT, FORWARD=ACCEPT, OUTPUT=ACCEPT)"
+
+# 3. Reset network interfaces
+echo "[*] Resetting network interfaces..."
+for iface in $(ls /sys/class/net | grep -v lo); do
+    ip link set $iface down
+    ip addr flush dev $iface
+    ip link set $iface up
+done
+echo "[✓] All network interfaces cleaned and IP addresses reset."
+
+# 4. Flush main routing table
+ip route flush table main
+echo "[✓] Routing table flushed."
+
+echo "========================================="
+echo "Cleanup complete.Network settings reseted."
+echo "========================================="

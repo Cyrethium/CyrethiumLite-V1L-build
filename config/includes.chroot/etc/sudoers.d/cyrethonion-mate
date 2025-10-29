@@ -1,0 +1,14 @@
+Cmnd_Alias CYRETHONION_MATE = \
+    /usr/bin/cyrethonion start, \
+    /usr/bin/cyrethonion stop, \
+    /usr/bin/cyrethonion restart, \
+    /usr/bin/cyrethonion status, \
+    /usr/bin/cyrethonion changeid, \
+    /usr/bin/cyrethonion bridges, \
+    /usr/bin/cyrethonion list-bridges, \
+    /usr/bin/cyrethonion clear-bridges, \
+    /usr/share/cyrethonion/cyrethonion-status
+
+Defaults!CYRETHONION_MATE !syslog, !pam_session
+
+%sudo ALL=(ALL) NOPASSWD: CYRETHONION_MATE

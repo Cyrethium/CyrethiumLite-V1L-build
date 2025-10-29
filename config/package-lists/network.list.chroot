@@ -1,0 +1,11 @@
+network-manager
+network-manager-gnome
+tor
+torsocks
+privoxy
+dnscrypt-proxy
+isc-dhcp-client
+iftop
+ifstat
+ipset
+nftables

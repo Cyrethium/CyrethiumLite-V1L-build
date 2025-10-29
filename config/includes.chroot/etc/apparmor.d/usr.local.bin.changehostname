@@ -1,0 +1,164 @@
+# AppArmor profile for changehostname tool
+# This profile allows the changehostname script to modify system hostname
+# and related configuration files
+
+#include <tunables/global>
+
+/usr/local/bin/changehostname {
+  #include <abstractions/base>
+  #include <abstractions/bash>
+  #include <abstractions/consoles>
+  #include <abstractions/nameservice>
+
+  # Allow execution of the script itself
+  /usr/local/bin/changehostname r,
+
+  # Bash and shell requirements
+  /bin/bash ix,
+  /bin/dash ix,
+  /usr/bin/bash ix,
+
+  # System binaries needed by the script - UNCONFINED
+  /bin/grep Ux,
+  /usr/bin/grep Ux,
+  /bin/sed Ux,
+  /usr/bin/sed Ux,
+  /bin/awk Ux,
+  /usr/bin/awk Ux,
+  /usr/bin/mawk Ux,
+  /usr/bin/gawk Ux,
+  /bin/mawk Ux,
+  /bin/gawk Ux,
+  /bin/cut Ux,
+  /usr/bin/cut Ux,
+  /bin/tail Ux,
+  /usr/bin/tail Ux,
+  /bin/cat Ux,
+  /usr/bin/cat Ux,
+  /bin/echo Ux,
+  /usr/bin/echo Ux,
+  /usr/bin/printf Ux,
+  /usr/bin/clear Ux,
+  /usr/bin/tput Ux,
+  /bin/read Ux,
+  /usr/bin/read Ux,
+  /bin/test Ux,
+  /usr/bin/test Ux,
+  /usr/bin/tr Ux,
+  /bin/tr Ux,
+
+  # Hostname management tools
+  /bin/hostname ix,
+  /usr/bin/hostname ix,
+  /usr/bin/hostnamectl ix,
+  /bin/hostnamectl ix,
+
+  # Command existence checks
+  /usr/bin/which ix,
+  /bin/which ix,
+  /usr/bin/command r,
+
+  # Date and time utilities
+  /bin/date ix,
+  /usr/bin/date ix,
+
+  # File operations
+  /bin/rm ix,
+  /usr/bin/rm ix,
+
+  # Hostname configuration files (read/write access)
+  /etc/hostname rw,
+  /etc/hosts rw,
+
+  # Backup files
+  /etc/hostname.backup rw,
+
+  # Logging
+  /var/log/hostname.log rw,
+
+  # Systemd hostname control
+  /etc/machine-id r,
+  /etc/systemd/system.conf r,
+  /run/systemd/system/ r,
+  /run/systemd/system/** r,
+
+  # DBus access for hostnamectl
+  /usr/bin/dbus-send ix,
+  /var/run/dbus/system_bus_socket rw,
+  /run/dbus/system_bus_socket rw,
+  dbus (send,receive) bus=system,
+  dbus (send,receive) bus=system path=/org/freedesktop/hostname1,
+  dbus (send,receive) bus=system interface=org.freedesktop.hostname1,
+
+  # Systemd access
+  /bin/systemctl ix,
+  /usr/bin/systemctl ix,
+  /run/systemd/private rw,
+
+  # Network information access
+  /proc/sys/kernel/hostname rw,
+  /proc/sys/kernel/domainname r,
+
+  # Standard system files
+  /etc/ld.so.cache r,
+  /etc/nsswitch.conf r,
+  /etc/passwd r,
+  /etc/group r,
+
+  # Library access
+  /lib/** mr,
+  /lib64/** mr,
+  /usr/lib/** mr,
+  /usr/lib64/** mr,
+
+  # Proc filesystem access
+  /proc/version r,
+  /proc/meminfo r,
+  /proc/*/stat r,
+  /proc/*/status r,
+
+  # Terminal and console access
+  /dev/tty rw,
+  /dev/pts/* rw,
+  /dev/console rw,
+
+  # Temporary files
+  /tmp/** rw,
+  /var/tmp/** rw,
+
+  # User input/output
+  /dev/stdin r,
+  /dev/stdout w,
+  /dev/stderr w,
+
+  # Allow reading from standard locations
+  /usr/share/terminfo/** r,
+
+  # Network interface information (for IP display)
+  /sys/class/net/ r,
+  /sys/class/net/** r,
+  /proc/net/route r,
+  /proc/net/fib_trie r,
+  /proc/net/** r,
+  /sys/devices/virtual/net/** r,
+
+  # OS release information
+  /etc/os-release r,
+  /usr/lib/os-release r,
+
+  # Required capabilities
+  capability sys_admin,
+
+  # Deny dangerous capabilities
+  deny capability sys_module,
+  deny capability sys_rawio,
+  deny capability sys_ptrace,
+  deny capability net_admin,
+  deny capability net_raw,
+
+  # Deny access to sensitive files
+  deny /etc/shadow r,
+  deny /etc/gshadow r,
+  deny /root/.ssh/** rw,
+  deny /home/*/.ssh/** rw,
+}

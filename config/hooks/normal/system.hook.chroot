@@ -1,0 +1,16 @@
+#!/bin/bash
+
+systemctl enable calamares-remove.service
+
+systemctl enable cyrethium-firstboot.service
+
+systemctl enable cyrethium-cleanup-temp.service
+
+systemctl enable cyrethium-cleanup-swap.service
+
+systemctl enable cyrethium-cleanup-logs.service
+
+systemctl enable permission-hardening.service
+
+systemctl enable haveged
+

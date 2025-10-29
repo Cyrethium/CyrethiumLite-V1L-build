@@ -1,0 +1,353 @@
+# AppArmor profile for paranoia
+# Extreme network isolation security tool
+
+#include <tunables/global>
+
+/usr/local/bin/paranoia flags=(complain) {
+  #include <abstractions/base>
+  #include <abstractions/bash>
+  #include <abstractions/consoles>
+  #include <abstractions/nameservice>
+  #include <abstractions/authentication>
+
+  # Script execution
+  /usr/local/bin/paranoia r,
+  /bin/bash rix,
+  /usr/bin/bash rix,
+  /bin/dash rix,
+  /usr/bin/dash rix,
+
+  # Root check
+  /usr/bin/id rix,
+  /bin/id rix,
+
+  # Terminal and display
+  /usr/bin/clear rix,
+  /usr/bin/tput rix,
+  /bin/cat rix,
+  /usr/bin/cat rix,
+  /bin/echo rix,
+  /usr/bin/echo rix,
+  /bin/sleep rix,
+  /usr/bin/sleep rix,
+  /usr/bin/printf rix,
+
+  # Terminal access
+  /dev/tty rw,
+  /dev/pts/* rw,
+  /dev/console rw,
+  owner /dev/pts/* rw,
+
+  # Terminfo
+  /usr/share/terminfo/** r,
+  /etc/terminfo/** r,
+  /lib/terminfo/** r,
+
+  # Process information
+  /proc/*/status r,
+  /proc/*/stat r,
+  /proc/*/cmdline r,
+  /proc/version r,
+  /proc/sys/kernel/** r,
+
+  # Network tools and utilities - Fixed permissions
+  /usr/sbin/iptables Pux,
+  /sbin/iptables Pux,
+  /usr/sbin/ip6tables Pux,
+  /sbin/ip6tables Pux,
+  /usr/sbin/iptables-save Pux,
+  /sbin/iptables-save Pux,
+  /usr/sbin/ip6tables-save Pux,
+  /sbin/ip6tables-save Pux,
+  /usr/sbin/iptables-restore Pux,
+  /sbin/iptables-restore Pux,
+  /usr/sbin/ip6tables-restore Pux,
+  /sbin/ip6tables-restore Pux,
+
+  # IP command for network interface management - Fixed permissions
+  /usr/sbin/ip Pux,
+  /sbin/ip Pux,
+  /bin/ip Pux,
+
+  # Network interface control - Fixed permissions
+  /usr/sbin/ifconfig Pux,
+  /sbin/ifconfig Pux,
+  /usr/sbin/ifup Pux,
+  /sbin/ifup Pux,
+  /usr/sbin/ifdown Pux,
+  /sbin/ifdown Pux,
+
+  # Kernel module management - Fixed permissions
+  /usr/sbin/modprobe Pux,
+  /sbin/modprobe Pux,
+  /usr/sbin/rmmod Pux,
+  /sbin/rmmod Pux,
+  /usr/bin/lsmod Pux,
+  /bin/lsmod Pux,
+  /usr/sbin/lsmod Pux,
+  /sbin/lsmod Pux,
+
+  # Systemctl for service management - Fixed permissions
+  /usr/bin/systemctl Pux,
+  /bin/systemctl Pux,
+  /usr/bin/systemd-tty-ask-password-agent rix,
+  /bin/systemd-tty-ask-password-agent rix,
+  /usr/bin/pkill rix,
+  /bin/pkill rix,
+  /usr/bin/killall rix,
+  /bin/killall rix,
+
+  # DHCP client
+  /usr/sbin/dhclient rix,
+  /sbin/dhclient rix,
+
+  # Filesystem and directory operations
+  /bin/mkdir rix,
+  /usr/bin/mkdir rix,
+  /bin/rm rix,
+  /usr/bin/rm rix,
+  /bin/chmod rix,
+  /usr/bin/chmod rix,
+  /bin/touch rix,
+  /usr/bin/touch rix,
+
+  # Text processing
+  /usr/bin/grep rix,
+  /bin/grep rix,
+  /usr/bin/awk rix,
+  /bin/awk rix,
+  /usr/bin/sed rix,
+  /bin/sed rix,
+
+  # Firewall state backup directory - Enhanced permissions
+  /etc/cyrethium/ rwk,
+  /etc/cyrethium/** rwk,
+
+  # Iptables rules files - Enhanced permissions
+  /etc/iptables/ rwk,
+  /etc/iptables/** rwk,
+
+  # Module blacklist files - Enhanced permissions
+  /etc/modprobe.d/ rwk,
+  /etc/modprobe.d/** rwk,
+
+  # Systemd service files
+  /run/systemd/system/ r,
+  /run/systemd/system/** r,
+  /etc/systemd/system/ r,
+  /etc/systemd/system/** rw,
+  /lib/systemd/system/ r,
+  /lib/systemd/system/** r,
+  /usr/lib/systemd/system/ r,
+  /usr/lib/systemd/system/** r,
+
+  # Systemd runtime
+  /run/systemd/private rw,
+  /run/systemd/notify rw,
+  /run/systemd/** rw,
+
+  # Netfilter and iptables modules
+  /lib/modules/** r,
+  /usr/lib/modules/** r,
+  /lib/xtables/** r,
+  /usr/lib/xtables/** r,
+  /lib/x86_64-linux-gnu/xtables/** r,
+  /usr/lib/x86_64-linux-gnu/xtables/** r,
+  /lib64/xtables/** r,
+  /usr/lib64/xtables/** r,
+
+  # Network configuration
+  /etc/network/ r,
+  /etc/network/** rw,
+  /etc/sysconfig/network-scripts/ r,
+  /etc/sysconfig/network-scripts/** rw,
+
+  # Proc and sys filesystem for network management
+  /proc/sys/net/** rw,
+  /proc/net/** r,
+  /sys/class/net/ r,
+  /sys/class/net/** rw,
+  /sys/devices/virtual/net/** rw,
+  /sys/devices/pci**/net/** rw,
+
+  # Kernel modules
+  /sys/module/ r,
+  /sys/module/** r,
+
+  # Command utilities
+  /usr/bin/which rix,
+  /usr/bin/command rix,
+  /usr/bin/tr rix,
+
+  # Process management
+  /proc/*/exe r,
+  /proc/*/comm r,
+
+  # Network state files
+  /var/run/network/ r,
+  /var/run/network/** rw,
+  /run/network/ r,
+  /run/network/** rw,
+
+  # DHCP state
+  /var/lib/dhcp/ r,
+  /var/lib/dhcp/** rw,
+
+  # NetworkManager
+  /var/lib/NetworkManager/ r,
+  /var/lib/NetworkManager/** rw,
+
+  # Temporary files
+  /tmp/** rw,
+  /var/tmp/** rw,
+
+  # DBus for systemd communication - Simplified and fixed
+  dbus (send,receive) bus=system,
+
+  # Capabilities required for network operations
+  capability net_admin,
+  capability net_raw,
+  capability net_bind_service,
+  capability sys_module,
+  capability sys_admin,
+  capability dac_override,
+  capability dac_read_search,
+  capability setuid,
+  capability setgid,
+  capability kill,
+  capability sys_ptrace,
+  capability sys_resource,
+  capability audit_write,
+
+  # Signal permissions for process killing
+  signal send set=(term, kill, int, hup, quit) peer=unconfined,
+  signal receive set=(term, kill, int, hup) peer=unconfined,
+  signal send peer=/**,
+
+  # Ptrace for process management
+  ptrace read,
+  ptrace trace,
+
+  # Network access
+  network inet raw,
+  network inet6 raw,
+  network packet raw,
+  network netlink raw,
+
+  # Allow read of any network interface
+  /sys/devices/** r,
+  /sys/bus/** r,
+
+  # User/group info
+  /etc/passwd r,
+  /etc/group r,
+  /etc/shadow r,
+
+  # Read network service configurations
+  /etc/services r,
+  /etc/protocols r,
+
+  # VPN configurations
+  /etc/openvpn/ r,
+  /etc/openvpn/** r,
+  /etc/wireguard/ r,
+  /etc/wireguard/** r,
+
+  # Additional utilities that might be called
+  /usr/bin/cut rix,
+  /bin/cut rix,
+  /usr/bin/sort rix,
+  /usr/bin/uniq rix,
+  /usr/bin/head rix,
+  /usr/bin/tail rix,
+  /usr/bin/wc rix,
+  /usr/bin/xargs rix,
+  /usr/bin/find rix,
+
+  # Cgroup access for systemd
+  /sys/fs/cgroup/ r,
+  /sys/fs/cgroup/** rw,
+
+  # PID files
+  /run/*.pid rw,
+  /var/run/*.pid rw,
+
+  # Lock files
+  /run/lock/** rw,
+  /var/lock/** rw,
+
+  # Additional network management
+  /usr/bin/nmcli rix,
+  /usr/sbin/NetworkManager rix,
+
+  # Wireless tools
+  /usr/sbin/iwconfig rix,
+  /sbin/iwconfig rix,
+  /usr/sbin/rfkill rix,
+  /sbin/rfkill rix,
+
+  # Bluetooth control
+  /usr/bin/bluetoothctl rix,
+  /usr/sbin/bluetoothd rix,
+
+  # System logging
+  /var/log/auth.log w,
+  /var/log/syslog w,
+  /var/log/messages w,
+
+  # Avahi daemon
+  /usr/sbin/avahi-daemon rix,
+
+  # CUPS printing service
+  /usr/sbin/cupsd rix,
+
+  # WPA supplicant
+  /usr/sbin/wpa_supplicant rix,
+  /sbin/wpa_supplicant rix,
+
+  # Additional network diagnostics
+  /usr/bin/netstat rix,
+  /bin/netstat rix,
+  /usr/sbin/ss rix,
+  /sbin/ss rix,
+
+  # Iproute2 config
+  /etc/iproute2/ r,
+  /etc/iproute2/** r,
+
+  # Shared libraries for iptables - Enhanced permissions
+  /lib/** mr,
+  /usr/lib/** mr,
+  /lib64/** mr,
+  /usr/lib64/** mr,
+  /lib/x86_64-linux-gnu/** mr,
+  /usr/lib/x86_64-linux-gnu/** mr,
+  /lib32/** mr,
+  /usr/lib32/** mr,
+
+  # Proc filesystem for iptables - Enhanced permissions
+  /proc/sys/net/netfilter/** rw,
+  /proc/sys/net/ipv4/** rw,
+  /proc/sys/net/ipv6/** rw,
+  /proc/sys/net/core/** rw,
+  /proc/sys/kernel/** rw,
+
+  # Additional system access for paranoia mode
+  /etc/hostname r,
+  /etc/hosts r,
+  /etc/resolv.conf rw,
+  /etc/nsswitch.conf r,
+
+  # Allow execution of shell built-ins and common utilities
+  /bin/* rix,
+  /usr/bin/* rix,
+  /sbin/* Pux,
+  /usr/sbin/* Pux,
+
+  # Mount and unmount capabilities for network interfaces
+  /bin/mount px,
+  /bin/umount px,
+  
+  # Additional network capabilities
+  capability net_broadcast,
+}

@@ -1,0 +1,27 @@
+#!/bin/bash
+# set -e
+
+#### Sparrow
+# wget https://github.com/sparrowwallet/sparrow/releases/download/$SPARROW/sparrow_$SPARROW-1_amd64.deb
+# dpkg -i sparrow*
+# rm -rf sparrow*
+
+#### Bitbox
+# wget https://github.com/digitalbitbox/bitbox-wallet-app/releases/download/v$BITBOX/bitbox_$BITBOX2.deb
+# dpkg -i bitbox*
+# rm -rf bitbox*
+
+#### exodus
+# wget https://downloads.exodus.com/releases/exodus-linux-x64-$EXODUS.deb
+# dpkg -i exodus*
+# rm -rf exodus*
+
+#### BitWarden
+# wget https://github.com/bitwarden/clients/releases/download/desktop-v$BITWARDEN/Bitwarden-$BITWARDEN-amd64.deb
+# dpkg -i Bitwarden*
+# rm -rf Bitwarden*
+
+#### Atomic
+# wget https://get.atomicwallet.io/download/atomicwallet-$ATOMIC.deb
+# dpkg -i atomic*
+# rm -rf atomic*

@@ -1,0 +1,178 @@
+# AppArmor profile for cyrethonion-mate
+# Tor routing system tray application - Python3 GTK application
+
+#include <tunables/global>
+
+/usr/bin/cyrethonion-mate {
+  #include <abstractions/base>
+  #include <abstractions/python>
+  #include <abstractions/gtk>
+  #include <abstractions/fonts>
+  #include <abstractions/freedesktop.org>
+  #include <abstractions/nameservice>
+  #include <abstractions/ssl_certs>
+  #include <abstractions/consoles>
+  #include <abstractions/authentication>
+
+  # Essential capabilities for system tray operations
+  capability setuid,
+  capability setgid,
+  capability audit_write,
+  capability dac_override,
+  capability kill,
+
+  # Signal permissions for subprocess management
+  signal (send) peer=unconfined,
+  signal (receive) peer=unconfined,
+
+  # Binary execution
+  /usr/bin/cyrethonion-mate r,
+  /usr/bin/python3* rix,
+  /usr/bin/env rix,
+  /bin/sh rix,
+  /bin/bash rix,
+
+  # Python libraries and modules (comprehensive access)
+  /usr/lib/python3*/** r,
+  /usr/local/lib/python3*/** r,
+  /usr/lib/python3*/dist-packages/** r,
+  /usr/lib/python3*/site-packages/** r,
+  /usr/local/lib/python3*/dist-packages/** r,
+  /usr/local/lib/python3*/site-packages/** r,
+  /usr/lib/python3*/lib-dynload/** r,
+  /usr/lib/python3*/*-packages/** r,
+
+  # GTK and GUI libraries
+  /usr/lib/**/gi/** r,
+  /usr/lib/**/glib-2.0/** r,
+  /usr/lib/**/gtk-3.0/** r,
+  /usr/lib/**/gdk-pixbuf-2.0/** r,
+  /usr/lib/**/gio/** r,
+  /usr/lib/**/gobject-introspection/** r,
+  /usr/lib/**/cairo/** r,
+  /usr/lib/**/pango/** r,
+  /usr/lib/**/atk/** r,
+  /usr/lib/**/gstreamer-1.0/** r,
+
+  # System libraries
+  /usr/lib/** r,
+  /lib/** r,
+  /lib64/** r,
+
+  # Application resources
+  /etc/cyrethonion/** r,
+  /usr/share/cyrethonion/** r,
+  /var/lib/cyrethonion/** r,
+  /usr/share/locale/** r,
+  /usr/share/icons/** r,
+  /usr/share/pixmaps/** r,
+  /usr/share/themes/** r,
+  /usr/share/glib-2.0/** r,
+
+  # Icon files (specific to cyrethonion system tray)
+  /usr/share/icons/hicolor/scalable/apps/cyrethonion-*.png r,
+  /usr/share/pixmaps/cyrethonion-*.png r,
+
+  # User configuration directories
+  owner @{HOME}/.cache/** rw,
+  owner @{HOME}/.config/** rw,
+  owner @{HOME}/.local/share/** rw,
+  owner @{HOME}/.recently-used.xbel rw,
+
+  # System information access for status monitoring
+  /proc/version r,
+  /proc/sys/kernel/version r,
+  /proc/sys/kernel/ostype r,
+  /proc/*/stat r,
+  /proc/*/cmdline r,
+  /proc/*/status r,
+  /proc/*/fd/ r,
+  /proc/*/fd/* r,
+  /proc/*/task/** r,
+  /proc/modules r,
+  /proc/loadavg r,
+  /proc/mounts r,
+  /proc/meminfo r,
+  /proc/cpuinfo r,
+  /proc/net/** r,
+  /sys/devices/system/cpu/online r,
+  /sys/class/net/** r,
+
+  # D-Bus access for desktop integration and systemd communication
+  dbus (send, receive) bus=session,
+  dbus (send, receive) bus=system,
+  dbus (send, receive) bus=system path=/org/freedesktop/systemd1,
+  dbus (send, receive) bus=system interface=org.freedesktop.systemd1.Manager,
+
+  # Essential utilities for system tray functionality
+  /usr/bin/{grep,ps,pgrep,id,whoami,which,cut,head,tail,wc,tr,sed,awk} rix,
+  /bin/{grep,ps,pgrep,id,whoami,which,cut,head,tail,wc,tr,sed,awk} rix,
+
+  # Network utilities for connectivity checks
+  /usr/bin/{curl,wget,ping,ss,netstat} rix,
+  /bin/{curl,wget,ping,ss,netstat} rix,
+
+  # System service management (unconfined for proper D-Bus access)
+  /usr/bin/systemctl Ux,
+  /bin/systemctl Ux,
+
+  # Critical: Sudo access with comprehensive configuration support (unconfined for proper execution)
+  /usr/bin/sudo Ux,
+  /bin/sudo Ux,
+  /etc/sudo.conf r,
+  /etc/sudoers r,
+  /etc/sudoers.d/ r,
+  /etc/sudoers.d/* r,
+  /etc/environment r,
+  /usr/lib/sudo/** rm,
+  /usr/libexec/sudo/** rm,
+  /var/lib/sudo/** rw,
+  /var/log/sudo.log rw,
+  /var/log/auth.log rw,
+  /run/sudo/** rw,
+  /var/run/sudo/** rw,
+
+  # Status checking scripts (proper profile transition)
+  /usr/share/cyrethonion/cyrethonion-status px -> cyrethonion-status,
+
+  # Execute cyrethonion with proper profile transition
+  /usr/bin/cyrethonion px,
+
+  # Temporary and runtime directories
+  /tmp/** rw,
+  /var/tmp/** rw,
+  /run/user/** rw,
+
+  # Additional system utilities
+  /usr/bin/{pkexec,gksu,env,test,sleep,date} rix,
+  /bin/{env,test,sleep,date} rix,
+
+  # File operations (limited to safe operations)
+  /usr/bin/{find,basename,dirname,readlink} rix,
+  /bin/{find,basename,dirname,readlink} rix,
+
+  # Network access for Tor connectivity checks
+  network inet stream,
+  network inet6 stream,
+  network inet dgram,
+  network inet6 dgram,
+  network netlink raw,
+  
+  # Unix socket and pipe communication for subprocess management
+  unix (send, receive) type=stream,
+  unix (send, receive) type=dgram,
+
+  # Security restrictions - deny dangerous operations
+  deny /etc/passwd w,
+  deny /etc/shadow rwx,
+  deny /root/** rwx,
+  deny /boot/** rwx,
+  deny /usr/bin/** w,
+  deny /bin/** w,
+  deny /sbin/** w,
+  deny /usr/sbin/** w,
+  deny /proc/sys/** w,
+  deny /sys/** w,
+  deny capability sys_ptrace,
+  deny capability sys_admin,
+}

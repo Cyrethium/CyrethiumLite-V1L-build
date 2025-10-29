@@ -1,0 +1,24 @@
+[Desktop Entry]
+Version=1.0
+Name=FixNetwork
+Comment=Network and iptables repair tool
+Comment[tr]=Ağ ve iptables onarım aracı
+Comment[es]=Herramienta de reparación de red e iptables
+Comment[fr]=Outil de réparation réseau et iptables
+Comment[de]=Netzwerk- und iptables-Reparaturtool
+Comment[ar]=أداة إصلاح الشبكة و iptables
+Comment[ru]=Инструмент восстановления сети и iptables
+Comment[zh]=网络和iptables修复工具
+Comment[ja]=ネットワークとiptables修復ツール
+Comment[ko]=네트워크 및 iptables 복구 도구
+Comment[pt]=Ferramenta de reparo de rede e iptables
+Comment[it]=Strumento di riparazione rete e iptables
+Comment[nl]=Netwerk- en iptables-reparatietool
+Comment[sv]=Nätverks- och iptables-reparationsverktyg
+Comment[pl]=Narzędzie naprawy sieci i iptables
+Exec=mate-terminal -- bash -c "sudo /usr/local/bin/fixnetwork; exec bash"
+Terminal=true
+Type=Application
+Icon=/usr/share/icons/cyrethium/fix.png
+Categories=System;
+StartupNotify=false

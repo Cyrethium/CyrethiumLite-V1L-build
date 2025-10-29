@@ -1,0 +1,11 @@
+PRETTY_NAME="Cyrethium Lite"
+NAME="Cyrethium Lite"
+ID=debian
+ID_LIKE=debian
+VERSION_CODENAME=Reborn
+RELEASE_TYPE=Stable
+VENDOR_NAME=root0emir
+VERSION="V1L"
+VERSION_ID="V1L"
+HOME_URL="https://cyrethium.org" 
+

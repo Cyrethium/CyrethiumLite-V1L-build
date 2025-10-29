@@ -1,0 +1,152 @@
+# This profile allows the change-mac script to modify network interface MAC addresses
+# using macchanger and manage network interfaces
+
+#include <tunables/global>
+
+/usr/local/bin/change-mac {
+  #include <abstractions/base>
+  #include <abstractions/bash>
+  #include <abstractions/consoles>
+  #include <abstractions/nameservice>
+
+  # Allow execution of the script itself
+  /usr/local/bin/change-mac r,
+
+  # Bash and shell requirements
+  /bin/bash ix,
+  /bin/dash ix,
+  /usr/bin/bash ix,
+
+  # System binaries needed by the script - UNCONFINED - AWK lmao
+  /bin/mkdir Ux,
+  /usr/bin/mkdir Ux,
+  /bin/grep Ux,
+  /usr/bin/grep Ux,
+  /bin/awk Ux,
+  /usr/bin/awk Ux,
+  /usr/bin/mawk Ux,
+  /usr/bin/gawk Ux,
+  /bin/mawk Ux,
+  /bin/gawk Ux,
+  /bin/cut Ux,
+  /usr/bin/cut Ux,
+  /bin/head Ux,
+  /usr/bin/head Ux,
+  /bin/sed Ux,
+  /usr/bin/sed Ux,
+  /usr/bin/clear Ux,
+  /usr/bin/tput Ux,
+  /bin/cat Ux,
+  /usr/bin/cat Ux,
+  /bin/echo Ux,
+  /usr/bin/echo Ux,
+  /usr/bin/printf Ux,
+  /usr/bin/read Ux,
+  /bin/test Ux,
+  /usr/bin/test Ux,
+
+  # Network management tools
+  /sbin/ip ix,
+  /usr/sbin/ip ix,
+  /bin/ip ix,
+  /usr/bin/ip ix,
+  /usr/bin/macchanger ix,
+  /sbin/macchanger ix,
+
+  # Macchanger data files
+  /usr/share/macchanger/** r,
+
+  # Command existence checks
+  /usr/bin/which ix,
+  /bin/which ix,
+  /usr/bin/command r,
+
+  # Configuration directory and backup file
+  /var/lib/change-mac/ rw,
+  /var/lib/change-mac/** rw,
+  owner /var/lib/change-mac/ rw,
+  owner /var/lib/change-mac/** rw,
+
+  # Network interface access
+  /sys/class/net/ r,
+  /sys/class/net/** r,
+  /proc/net/dev r,
+  /proc/net/** r,
+  /sys/devices/virtual/net/** r,
+  /sys/devices/pci**/net/** r,
+  /sys/bus/pci/devices/** r,
+
+  # Network interface control (required for MAC address changes)
+  capability net_admin,
+  capability net_raw,
+  capability dac_override,
+  capability dac_read_search,
+
+  # File system access for interface management
+  /sys/devices/pci**/net/** rw,
+  /sys/devices/virtual/net/** rw,
+  /sys/devices/** r,
+  /sys/bus/pci/devices/** r,
+  /sys/class/net/*/address rw,
+  /sys/class/net/*/operstate r,
+  /sys/class/net/*/carrier r,
+
+  # Standard system files
+  /etc/ld.so.cache r,
+  /etc/nsswitch.conf r,
+  /etc/passwd r,
+  /etc/group r,
+
+  # Library access
+  /lib/** mr,
+  /lib64/** mr,
+  /usr/lib/** mr,
+  /usr/lib64/** mr,
+
+  # Proc filesystem access
+  /proc/version r,
+  /proc/meminfo r,
+  /proc/*/stat r,
+  /proc/*/status r,
+  /proc/sys/net/** r,
+
+  # Terminal and console access
+  /dev/tty rw,
+  /dev/pts/* rw,
+  /dev/console rw,
+
+  # Temporary files
+  /tmp/** rw,
+  /var/tmp/** rw,
+
+  # User input/output
+  /dev/stdin r,
+  /dev/stdout w,
+  /dev/stderr w,
+
+  # Allow reading from standard locations
+  /usr/share/terminfo/** r,
+
+  # Network configuration files (read-only for interface info)
+  /etc/network/interfaces r,
+  /run/network/** r,
+  /run/udev/data/** r,
+  /sys/firmware/efi/efivars/** r,
+
+  # Network socket access for interface management
+  network netlink raw,
+  network packet raw,
+  network inet raw,
+  network inet6 raw,
+
+  # Deny dangerous capabilities
+  deny capability sys_module,
+  deny capability sys_rawio,
+  deny capability sys_ptrace,
+
+  # Deny access to sensitive files
+  deny /etc/shadow r,
+  deny /etc/gshadow r,
+  deny /root/.ssh/** rw,
+  deny /home/*/.ssh/** rw,
+}

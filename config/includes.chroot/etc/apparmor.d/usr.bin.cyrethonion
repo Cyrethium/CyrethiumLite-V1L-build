@@ -1,0 +1,160 @@
+# AppArmor profile for cyrethonion
+# Main Tor routing controller bash script
+
+#include <tunables/global>
+
+/usr/bin/cyrethonion {
+  #include <abstractions/base>
+  #include <abstractions/bash>
+  #include <abstractions/consoles>
+  #include <abstractions/nameservice>
+  #include <abstractions/authentication>
+
+  # Essential capabilities for network control and system management
+  capability net_admin,
+  capability net_raw,
+  capability dac_override,
+  capability sys_admin,
+  capability setuid,
+  capability setgid,
+  capability audit_write,
+
+  # Binary execution paths
+  /usr/bin/cyrethonion r,
+  /bin/bash rix,
+  /bin/sh rix,
+  /bin/dash rix,
+
+  # Core shell utilities (essential for bash script operations)
+  /usr/bin/{tput,id,grep,awk,sed,cat,ps,echo,head,tail,wc,cut,sort,uniq,tr} rix,
+  /bin/{tput,id,grep,awk,sed,cat,ps,echo,head,tail,wc,cut,sort,uniq,tr} rix,
+
+  # Process management utilities
+  /usr/bin/{pkill,pgrep,killall,kill} rix,
+  /bin/{pkill,pgrep,killall,kill} rix,
+
+  # File operations (required by cyrethonion script)
+  /usr/bin/{mv,chmod,touch,rm,mkdir,rmdir,cp,chown,chgrp,ln,find,which,basename,dirname} rix,
+  /bin/{mv,chmod,touch,rm,mkdir,rmdir,cp,chown,chgrp,ln,find,which,basename,dirname} rix,
+
+  # System utilities
+  /usr/bin/{sleep,date,whoami,env,test} rix,
+  /bin/{sleep,date,whoami,env,test} rix,
+
+  # Systemd service management (unconfined for proper D-Bus access)
+  /usr/bin/systemctl Ux,
+  /bin/systemctl Ux,
+  /usr/sbin/service Ux,
+
+  # Critical: Sudo access with proper configuration access
+  /usr/bin/sudo rix,
+  /bin/sudo rix,
+  /etc/sudo.conf r,
+  /etc/sudoers r,
+  /etc/sudoers.d/ r,
+  /etc/sudoers.d/* r,
+  /usr/lib/sudo/** rm,
+  /usr/libexec/sudo/** rm,
+  /var/lib/sudo/** rw,
+  /var/log/sudo.log rw,
+  /var/log/auth.log rw,
+  /run/sudo/** rw,
+  /var/run/sudo/** rw,
+
+  # Network management tools (critical for Tor routing)
+  /usr/sbin/{iptables,ip6tables,iptables-save,iptables-restore} rix,
+  /sbin/{iptables,ip6tables,iptables-save,iptables-restore} rix,
+  # Allow iptables alternatives and multi-binaries
+  /usr/sbin/{iptables-legacy,iptables-nft,ip6tables-legacy,ip6tables-nft} rix,
+  /usr/sbin/{xtables-legacy-multi,xtables-nft-multi} rix,
+  # Allow loading kernel modules if iptables needs them
+  /usr/sbin/modprobe rix,
+  /sbin/modprobe rix,
+  /usr/sbin/{sysctl,ip} rix,
+  /sbin/{sysctl,ip} rix,
+  /usr/bin/{ss,netstat,ping,ping6} rix,
+  /bin/{ss,netstat,ping,ping6} rix,
+
+  # DNS and connectivity tools
+  /usr/bin/{dig,nslookup,host,curl,wget} rix,
+  /bin/{dig,nslookup,host,curl,wget} rix,
+
+  # Tor service and configuration
+  /etc/tor/** rw,
+  /var/lib/tor/** rw,
+  /usr/share/tor/** r,
+  /var/log/tor/** rw,
+
+  # Cyrethonion specific directories
+  /var/lib/ rw,
+  /var/lib/cyrethonion/ rw,
+  /var/lib/cyrethonion/** rw,
+  /etc/cyrethonion/** rw,
+  /usr/share/cyrethonion/** r,
+  /var/log/cyrethonion/** rw,
+  /usr/share/cyrethonion/cyrethonion-status rix,
+
+  # Network configuration files (script modifies these)
+  /etc/resolv.conf rw,
+  /etc/hosts rw,
+  /etc/sysctl.d/ rw,
+  /etc/sysctl.d/** rw,
+  /etc/sysctl.conf rw,
+
+  # System information and sysctl access
+  /proc/version r,
+  /proc/sys/** rix,
+  /proc/net/** r,
+  /proc/modules r,
+  /proc/mounts r,
+  /proc/*/stat r,
+  /proc/*/cmdline r,
+  /proc/*/status r,
+  /proc/*/fd/ r,
+  /proc/*/fd/* r,
+  /proc/loadavg r,
+  /proc/meminfo r,
+  /proc/cpuinfo r,
+  /sys/class/net/** r,
+  /sys/net/** r,
+  /sys/devices/virtual/net/** r,
+
+  # sysctl executable access (needed for applying rules)
+  /sbin/sysctl ix,
+  /usr/sbin/sysctl ix,
+
+  # Temporary directories
+  /tmp/** rw,
+  /var/tmp/** rw,
+
+  # Runtime directories
+  /run/** r,
+  /run/xtables.lock rw,
+  /run/systemd/resolve/** rw,
+  /var/run/** r,
+
+  # Library access for utilities
+  /usr/lib/** r,
+  /lib/** r,
+  /lib64/** r,
+
+  # Network access (required for Tor connectivity tests)
+  network inet stream,
+  network inet6 stream,
+  network inet dgram,
+  network inet6 dgram,
+  network inet raw,
+  network inet6 raw,
+
+  # Security restrictions - deny dangerous operations
+  deny /etc/passwd w,
+  deny /etc/shadow rwx,
+  deny /root/.ssh/** rwx,
+  deny /home/*/.ssh/id_* rwx,
+  deny /boot/** rwx,
+  deny /usr/bin/** w,
+  deny /bin/** w,
+  deny /sbin/** w,
+  deny /usr/sbin/** w,
+  deny capability sys_ptrace,
+}

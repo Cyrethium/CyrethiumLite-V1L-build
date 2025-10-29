@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Install Cyrethium
+GenericName=Cyrethium Installer
+Exec=calamares-install-debian
+Comment=Calamares — Installer for Cyrethium
+Keywords=calamares;system;install;debian;installer
+Icon=/usr/share/icons/cyrethium/install.png
+Terminal=false
+Categories=Qt;System;
+StartupWMClass=calamares
+StartupNotify=True

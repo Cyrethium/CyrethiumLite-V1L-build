@@ -1,0 +1,51 @@
+#!/bin/bash
+
+# Simple and reliable Cyrethonion status checker
+# 4-step verification: internet connectivity + backup file + iptables + tor service
+
+BACKUPDIR="/var/lib/cyrethonion"
+TOR_PORT="9040"
+
+# Step 1: Check internet connectivity using nmcli (no external IP leak)
+check_internet() {
+    local nmcli_state=$(nmcli -t -f STATE general 2>/dev/null)
+    case "$nmcli_state" in
+        "connected")
+            return 0  # Internet connection available
+            ;;
+        "disconnected"|"connecting"|"asleep"|"")
+            return 1  # No internet or transitional state
+            ;;
+        *)
+            return 1  # Unknown state, treat as offline
+            ;;
+    esac
+}
+
+# Check internet connectivity first
+if ! check_internet; then
+    echo -n "offline"
+    exit 0
+fi
+
+# Step 2: Check if cyrethonion backup file exists (indicates it was started)
+if [ ! -f "$BACKUPDIR/started" ]; then
+    echo -n "stopped"
+    exit 0
+fi
+
+# Step 3: Check if iptables rules are applied (REDIRECT to port 9040)
+if ! iptables-save 2>/dev/null | grep -q "REDIRECT.*$TOR_PORT"; then
+    echo -n "disabled"
+    exit 0
+fi
+
+# Step 4: Check if tor systemd service is active
+if ! systemctl is-active --quiet tor 2>/dev/null; then
+    echo -n "disabled"
+    exit 0
+fi
+
+# All checks passed - Tor routing is enabled
+echo -n "enabled"
+exit 0

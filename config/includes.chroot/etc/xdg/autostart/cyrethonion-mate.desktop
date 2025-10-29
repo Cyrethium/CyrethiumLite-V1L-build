@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Cyrethonion
+Exec=cyrethonion-mate
+OnlyShowIn=MATE;
+StartupNotify=false
+Terminal=false
+Categories=System;Security;Network;
